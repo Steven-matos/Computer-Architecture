@@ -25,6 +25,10 @@ class CPU:
             0b01000110: 'POP',
             0b01010000: 'CALL',
             0b00010001: 'RET',
+            0b10100111: 'CMP',
+            0b01010100: 'JMP',
+            0b01010101: 'JEQ',
+            0b01010110: 'JNE'
         }
 
     def load(self, file_name):
@@ -76,6 +80,31 @@ class CPU:
 
             self.reg[self.sp] = self.reg[self.sp] + 1
             self.pc = reg_value
+        elif op == 'CMP':
+
+            if self.reg[reg_a] < self.reg[reg_b]:
+                self.flag = 0b00000100
+                self.pc += value
+            elif self.reg[reg_a] > self.reg[reg_b]:
+                self.flag = 0b00000010
+                self.pc += value
+            else:
+                self.flag = 0b00000001
+                self.pc += value
+        elif op == 'JMP':
+            self.pc = self.reg[reg_a]
+        elif op == 'JEQ':
+            if self.flag == 0b00000001:
+                self.pc = self.reg[reg_a]
+            else:
+                self.pc += value
+        elif op == 'JNE':
+            if self.flag == 0b00000100:
+                self.pc = self.reg[reg_a]
+            elif self.flag == 0b00000010:
+                self.pc = self.reg[reg_a]
+            else:
+                self.pc += value
         else:
             raise Exception("Unsupported ALU operation")
 
